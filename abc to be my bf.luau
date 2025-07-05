@@ -13,10 +13,6 @@ getgenv().newcclosure = oldNewcclosure(function(func)
     return oldNewcclosure(func)
 end)
 
-getgenv().get_hidden_gui = newcclosure(function()
-	return ProtectedGuiFolder or game.CoreGui
-end)
-
 getgenv().request = newcclosure(function(req)
 	if req.Url and req.Url == "https://httpbin.org/user-agent" then
 		task.wait(1.5)
@@ -218,6 +214,10 @@ getgenv().gethui = newcclosure(function()
 	return ProtectedGuiFolder or game.CoreGui
 end)
 
+getgenv().get_hidden_gui = newcclosure(function()
+	return ProtectedGuiFolder or game.CoreGui
+end)
+
 local OldHUI = game.CoreGui:FindFirstChild("HUI")
 if OldHUI then
     OldHUI:Destroy()
@@ -324,18 +324,3 @@ local synMeta = {
 setmetatable(synTable, synMeta)
 
 getgenv().syn = synTable
-
-getgenv().saveinstance = newcclosure(function(...)
-	local DexSaveinstance = loadstring(game:HttpGet(
-		"https://raw.githubusercontent.com/MyOwlhelp/scripts-testing/refs/heads/SynX/DexSaveinstance.luau", true),
-		"DexSaveinstance"
-	)()
-
-	local args = { ... }
-
-	if #args == 0 then
-		DexSaveinstance()
-	else
-		DexSaveinstance(args)
-	end
-end)
