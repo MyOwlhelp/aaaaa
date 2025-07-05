@@ -1,12 +1,21 @@
 -- Hexa API Patch.lua
 
 local ProtectedClosures = {}
+local ProtectedGuis = {}
 local oldNewcclosure = newcclosure
 
 getgenv().newcclosure = oldNewcclosure(function(func)
     table.insert(ProtectedClosures,func)
     return oldNewcclosure(func)
 end)
+
+if UseHexaDecompiler then
+    loadstring(game:HttpGet("https://gist.githubusercontent.com/MyOwlhelp/b103f397cd59fda36bb8b7767dc9cd8d/raw/af354fc544d2264532835938970d3434f8a34677/HexaLuaDecompiler.luau", true))()
+else
+    getgenv().decompile = function(_)
+        return "-- Built-in decompiler is disabled. Put your own decompiler here."
+    end;
+end
 
 getgenv().printidentity = newcclosure(function()
     print("Current identity is", CurrentLevel or ExecutorLevel)
@@ -217,10 +226,6 @@ getgenv().gethui = newcclosure(function()
 	return ProtectedGuiFolder or game.CoreGui
 end)
 
-local sxlib = Instance.new("LocalScript")
-sxlib.Parent = game.CoreGui.RobloxGui
-sxlib.Name = "Corescripts/sxlib"
-
 local OldHUI = game.CoreGui:FindFirstChild("HUI")
 if OldHUI then
     OldHUI:Destroy()
@@ -366,3 +371,9 @@ getgenv().saveinstance = newcclosure(function(...)
 		DexSaveinstance(args)
 	end
 end)
+
+for _, v in ipairs(ProtectedGuiFolder:GetChildren()) do
+    if not ProtectedGuis[v] then
+        table.insert(ProtectedGuis, v)
+    end
+end
