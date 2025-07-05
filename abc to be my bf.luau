@@ -3,11 +3,120 @@
 local ProtectedClosures = {}
 local ProtectedGuis = {}
 local oldNewcclosure = newcclosure
+local base64_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+local base64_lookup = {}
+for i = 1, #base64_chars do
+	base64_lookup[base64_chars:sub(i, i)] = i - 1
+end
 
 getgenv().newcclosure = oldNewcclosure(function(func)
     table.insert(ProtectedClosures,func)
     return oldNewcclosure(func)
 end)
+
+getgenv().crypt = {
+	encrypt = newcclosure(function(data, key)
+		if type(data) ~= "string" or type(key) ~= "string" then
+			error("encrypt expects (string, string)", 2)
+		end
+		local result = {}
+		local keyLength = #key
+		for i = 1, #data do
+			local dataByte = data:byte(i)
+			local keyByte = key:byte(((i - 1) % keyLength) + 1)
+			table.insert(result, string.char((dataByte + keyByte) % 256))
+		end
+		return table.concat(result)
+	end),
+
+	decrypt = newcclosure(function(data, key)
+		if type(data) ~= "string" or type(key) ~= "string" then
+			error("decrypt expects (string, string)", 2)
+		end
+		local result = {}
+		local keyLength = #key
+		for i = 1, #data do
+			local dataByte = data:byte(i)
+			local keyByte = key:byte(((i - 1) % keyLength) + 1)
+			table.insert(result, string.char((dataByte - keyByte) % 256))
+		end
+		return table.concat(result)
+	end),
+
+	derive = newcclosure(function(value, length)
+		if type(value) ~= "string" then
+			error("derive expects a string", 2)
+		end
+		length = length or 32
+		local result = {}
+		local valLen = #value
+		for i = 1, length do
+			local char = value:byte(((i - 1) % valLen) + 1)
+			table.insert(result, string.char((char + i * 13) % 256))
+		end
+		return table.concat(result)
+	end),
+
+	random = newcclosure(function(size)
+		size = size or 16
+		local result = {}
+		for _ = 1, size do
+			table.insert(result, string.char(math.random(0, 255)))
+		end
+		return table.concat(result)
+	end),
+
+	base64 = {
+		encode = newcclosure(function(data)
+			local result = {}
+			local bytes = { string.byte(data, 1, #data) }
+
+			for i = 1, #bytes, 3 do
+				local b1 = bytes[i]
+				local b2 = bytes[i + 1] or 0
+				local b3 = bytes[i + 2] or 0
+
+				local n = b1 * 65536 + b2 * 256 + b3
+
+				local c1 = math.floor(n / 262144) % 64 + 1
+				local c2 = math.floor(n / 4096) % 64 + 1
+				local c3 = math.floor(n / 64) % 64 + 1
+				local c4 = n % 64 + 1
+
+				table.insert(result, base64_chars:sub(c1, c1))
+				table.insert(result, base64_chars:sub(c2, c2))
+				table.insert(result, (i + 1 <= #bytes) and base64_chars:sub(c3, c3) or "=")
+				table.insert(result, (i + 2 <= #bytes) and base64_chars:sub(c4, c4) or "=")
+			end
+
+			return table.concat(result)
+		end),
+
+		decode = newcclosure(function(data)
+			data = data:gsub("[^" .. base64_chars .. "=]", "")
+			local result = {}
+
+			for i = 1, #data, 4 do
+				local c1 = base64_lookup[data:sub(i, i)] or 0
+				local c2 = base64_lookup[data:sub(i + 1, i + 1)] or 0
+				local c3 = base64_lookup[data:sub(i + 2, i + 2)] or 0
+				local c4 = base64_lookup[data:sub(i + 3, i + 3)] or 0
+
+				local n = c1 * 262144 + c2 * 4096 + c3 * 64 + c4
+
+				local b1 = math.floor(n / 65536) % 256
+				local b2 = math.floor(n / 256) % 256
+				local b3 = n % 256
+
+				table.insert(result, string.char(b1))
+				if data:sub(i + 2, i + 2) ~= "=" then table.insert(result, string.char(b2)) end
+				if data:sub(i + 3, i + 3) ~= "=" then table.insert(result, string.char(b3)) end
+			end
+
+			return table.concat(result)
+		end)
+	}
+}
 
 getgenv().printidentity = newcclosure(function()
     print("Current identity is", CurrentLevel or ExecutorLevel)
@@ -218,6 +327,139 @@ getgenv().gethui = newcclosure(function()
 	return ProtectedGuiFolder or game.CoreGui
 end)
 
+-- NOTIFICATION GUI --
+
+-- Instances: 7 | Scripts: 1 | Modules: 0 | Tags: 0
+local G2L = {};
+
+-- StarterGui.You are a fucking skid.
+G2L["1"] = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"));
+G2L["1"]["Name"] = [[You are a fucking skid.]];
+G2L["1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling;
+
+
+-- StarterGui.You are a fucking skid..LocalScript
+G2L["2"] = Instance.new("LocalScript", G2L["1"]);
+
+
+
+-- StarterGui.You are a fucking skid..NotificationFrame
+G2L["3"] = Instance.new("Frame", G2L["1"]);
+G2L["3"]["BorderSizePixel"] = 0;
+G2L["3"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["3"]["Size"] = UDim2.new(0, 341, 0, 583);
+G2L["3"]["Position"] = UDim2.new(0.73373, 0, 0, 0);
+G2L["3"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["3"]["Name"] = [[NotificationFrame]];
+G2L["3"]["BackgroundTransparency"] = 1;
+
+
+-- StarterGui.You are a fucking skid..NotificationFrame.UIListLayout
+G2L["4"] = Instance.new("UIListLayout", G2L["3"]);
+G2L["4"]["Padding"] = UDim.new(0, 5);
+G2L["4"]["VerticalAlignment"] = Enum.VerticalAlignment.Bottom;
+G2L["4"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
+
+
+-- StarterGui.You are a fucking skid..NotificationFrame.Template
+G2L["5"] = Instance.new("Frame", G2L["3"]);
+G2L["5"]["Visible"] = false;
+G2L["5"]["BorderSizePixel"] = 0;
+G2L["5"]["BackgroundColor3"] = Color3.fromRGB(16, 16, 16);
+G2L["5"]["Size"] = UDim2.new(0, 348, 0, 34);
+G2L["5"]["Position"] = UDim2.new(0, 0, 0.94168, 0);
+G2L["5"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["5"]["Name"] = [[Template]];
+G2L["5"]["Rotation"] = -21;
+
+
+-- StarterGui.You are a fucking skid..NotificationFrame.Template.UICorner
+G2L["6"] = Instance.new("UICorner", G2L["5"]);
+
+
+
+-- StarterGui.You are a fucking skid..NotificationFrame.Template.NotificationText
+G2L["7"] = Instance.new("TextLabel", G2L["5"]);
+G2L["7"]["TextWrapped"] = true;
+G2L["7"]["BorderSizePixel"] = 0;
+G2L["7"]["TextSize"] = 30;
+G2L["7"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+G2L["7"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["7"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["7"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["7"]["BackgroundTransparency"] = 1;
+G2L["7"]["RichText"] = true;
+G2L["7"]["Size"] = UDim2.new(0, 332, 0, 34);
+G2L["7"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["7"]["Text"] = [[Test]];
+G2L["7"]["Name"] = [[NotificationText]];
+G2L["7"]["Position"] = UDim2.new(0.02232, 0, 0, 0);
+
+
+-- StarterGui.You are a fucking skid..LocalScript
+local function C_2()
+local script = G2L["2"];
+	local hui = gethui()
+	local NotificationFrame = script.Parent:WaitForChild("NotificationFrame")
+	local CurrentNotificationGui = 0
+	
+	if not syn or hui.Name ~= "HexaAPI_PROTECTED" then
+		return
+	end
+	
+	script.Parent.Name = tostring(syn.crypt.random())
+	script.Parent.Parent = hui
+	
+	local TweenService = game:GetService("TweenService")
+	
+	local CoreRemote = Instance.new("BindableEvent")
+	CoreRemote.Name = "HexaAPI_CoreBindableEvent"
+	CoreRemote.Parent = hui
+	
+	CoreRemote.Event:Connect(function(Data)
+		if not Data then return end
+	
+		CurrentNotificationGui = CurrentNotificationGui + 1
+	
+		local ClonedTemplate = NotificationFrame.Template:Clone()
+		ClonedTemplate.Name = tostring(CurrentNotificationGui)
+		ClonedTemplate.Visible = true
+		ClonedTemplate.Parent = NotificationFrame
+	
+		local TemplateText = ClonedTemplate:FindFirstChild("NotificationText")
+		if TemplateText then
+			TemplateText.Text = tostring(Data)
+		end
+	
+		task.delay(5, function()
+			local fadeTweenInfo = TweenInfo.new(0.75, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+	
+			local tweenGoals = {
+				BackgroundTransparency = 1,
+			}
+	
+			local textGoals = {
+				TextTransparency = 1,
+			}
+	
+			local fadeFrame = TweenService:Create(ClonedTemplate, fadeTweenInfo, tweenGoals)
+			local fadeText = TweenService:Create(TemplateText, fadeTweenInfo, textGoals)
+	
+			fadeFrame:Play()
+			fadeText:Play()
+	
+			fadeFrame.Completed:Wait()
+			ClonedTemplate:Destroy()
+			CurrentNotificationGui = CurrentNotificationGui - 1
+		end)
+	end)
+end;
+task.spawn(C_2);
+
+--return G2L["1"], require; -- I think without this the gui will runs fine.
+
+--------------------------
+
 local OldHUI = game.CoreGui:FindFirstChild("HUI")
 if OldHUI then
     OldHUI:Destroy()
@@ -258,10 +500,6 @@ local synTable = {
 		return false
 	end,
 
-    printidentity = function()
-        printidentity()
-    end, 
-
 	write_clipboard = function(content)
 		setclipboard(content)
 	end,
@@ -275,29 +513,9 @@ local synTable = {
 			return crypt and crypt.decrypt and crypt.decrypt(data, key)
 		end,
 
-		derive = function(value, length)
-			length = length or 32
-			local derived = table.create(length)
-			local valueLength = #value
+		derive = crypt.derive,
 
-			for i = 1, length do
-				local char = value:byte(((i - 1) % valueLength) + 1)
-				derived[i] = string.char((char + i * 13) % 256)
-			end
-
-			return table.concat(derived)
-		end,
-
-		random = function(size)
-			size = size or 16
-			local bytes = table.create(size)
-
-			for i = 1, size do
-				bytes[i] = string.char(math.random(0, 255))
-			end
-
-			return table.concat(bytes)
-		end,
+		random = crypt.random,
 
 		base64 = {
 			encode = function(data)
@@ -365,7 +583,7 @@ getgenv().saveinstance = newcclosure(function(...)
 end)
 
 for _, v in ipairs(ProtectedGuiFolder:GetChildren()) do
-    if not ProtectedGuis[v] then
+    if v:IsA("ScreenGui") and not ProtectedGuis[v] then
         table.insert(ProtectedGuis, v)
     end
 end
