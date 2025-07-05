@@ -284,22 +284,17 @@ NotificationText.TextXAlignment = Enum.TextXAlignment.Left
 local function ZPPUPZ_fake_script() -- Hexa_Notification.LocalScript 
 	local script = Instance.new('LocalScript', Hexa_Notification)
 
-	local hui = gethui()
 	local NotificationFrame = script.Parent:WaitForChild("NotificationFrame")
 	local CurrentNotificationGui = 0
 	
-	if not syn or hui.Name ~= "HexaAPI_PROTECTED" then
-		return
-	end
-	
-	script.Parent.Name = tostring(syn.crypt.random())
-	script.Parent.Parent = hui
+	script.Parent.Name = tostring(math.random() + math.huge)
+	script.Parent.Parent = ProtectedGuiFolder
 	
 	local TweenService = game:GetService("TweenService")
 	
 	local CoreRemote = Instance.new("BindableEvent")
 	CoreRemote.Name = "HexaAPI_CoreBindableEvent"
-	CoreRemote.Parent = hui
+	CoreRemote.Parent = ProtectedGuiFolder
 	
 	CoreRemote.Event:Connect(function(Data)
 		if not Data then return end
