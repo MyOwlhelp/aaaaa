@@ -1,7 +1,6 @@
 -- Hexa API Patch.lua
 
 local ProtectedClosures = {}
-local ProtectedGuis = {}
 local oldNewcclosure = newcclosure
 local base64_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
 local base64_lookup = {}
@@ -12,10 +11,6 @@ end
 getgenv().newcclosure = oldNewcclosure(function(func)
     table.insert(ProtectedClosures,func)
     return oldNewcclosure(func)
-end)
-
-getgenv().printidentity = newcclosure(function()
-    print("Current identity is", CurrentLevel or ExecutorLevel)
 end)
 
 getgenv().get_hidden_gui = newcclosure(function()
@@ -470,9 +465,3 @@ getgenv().saveinstance = newcclosure(function(...)
 		DexSaveinstance(args)
 	end
 end)
-
-for _, v in ipairs(ProtectedGuiFolder:GetChildren()) do
-    if v:IsA("ScreenGui") and not ProtectedGuis[v] then
-        table.insert(ProtectedGuis, v)
-    end
-end
