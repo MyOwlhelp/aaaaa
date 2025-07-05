@@ -220,9 +220,18 @@ end)
 
 -- NOTIFICATION GUI --
 
+task.spawn([[
+
+]])
+
 -- Instances:
 
 repeat task.wait() until ProtectedGuiFolder
+for _, v in ipairs(ProtectedGuiFolder:GetChildren()) do
+    if v:IsA("ScreenGui") and v.Name == "Hexa_Notification" then
+        v:Destroy()
+    end
+end
 local Hexa_Notification = Instance.new("ScreenGui")
 local NotificationFrame = Instance.new("Frame")
 local UIListLayout = Instance.new("UIListLayout")
@@ -284,8 +293,6 @@ local function ZPPUPZ_fake_script() -- Hexa_Notification.LocalScript
 
 	local NotificationFrame = script.Parent:WaitForChild("NotificationFrame")
 	local CurrentNotificationGui = 0
-	
-	script.Parent.Name = tostring(math.random() + math.huge)
 	
 	local TweenService = game:GetService("TweenService")
 	
