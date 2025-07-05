@@ -247,49 +247,12 @@ local synTable = {
 
     protect_gui = function(gui)
 	    if not gui:IsA("Instance") then return gui end
-
 	    gui.Parent = ProtectedGuiFolder
-
-	    local rawDestroy = gui.Destroy
-	    local mt = getmetatable(gui) or {}
-
-	    mt.__newindex = newcclosure(function(t, k, v)
-		    if k == "Parent" and v == nil then
-			    warn("[HexaAPI] Attempted to unparent protected GUI. Action blocked.")
-			    return
-	    	end
-		    rawset(t, k, v)
-	    end)
-
-	    gui.Destroy = newcclosure(function()
-		    warn("[HexaAPI] Attempted to destroy protected GUI. Action blocked.")
-	    end)
-
-	    setmetatable(gui, mt)
-
-	    gui.AncestryChanged:Connect(function(_, parent)
-		    if not parent then
-			    task.delay(0.1, function()
-				    if not ProtectedGuiFolder:FindFirstChild(gui.Name) then
-					    gui.Parent = ProtectedGuiFolder
-					    warn("[HexaAPI] Protected GUI was deleted and has been restored.")
-				    end
-			    end)
-		    end
-	    end)
-
 	    return gui
     end,
 
     unprotect_gui = function(gui)
 	    if not gui:IsA("Instance") then return gui end
-
-	    local mt = getmetatable(gui)
-	    if mt and rawget(mt, "__newindex") then
-		    mt.__newindex = nil
-	    end
-
-	    gui.Destroy = nil
 	    gui.Parent = game.StarterGui
 	    return gui
     end,
