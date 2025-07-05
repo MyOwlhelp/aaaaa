@@ -220,11 +220,9 @@ end)
 
 -- NOTIFICATION GUI --
 
--- Gui to Lua
--- Version: 3.2
-
 -- Instances:
 
+repeat task.wait() until ProtectedGuiFolder
 local Hexa_Notification = Instance.new("ScreenGui")
 local NotificationFrame = Instance.new("Frame")
 local UIListLayout = Instance.new("UIListLayout")
@@ -235,7 +233,7 @@ local NotificationText = Instance.new("TextLabel")
 --Properties:
 
 Hexa_Notification.Name = "Hexa_Notification"
-Hexa_Notification.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+Hexa_Notification.Parent = ProtectedGuiFolder or gethui()
 Hexa_Notification.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 NotificationFrame.Name = "NotificationFrame"
@@ -288,7 +286,6 @@ local function ZPPUPZ_fake_script() -- Hexa_Notification.LocalScript
 	local CurrentNotificationGui = 0
 	
 	script.Parent.Name = tostring(math.random() + math.huge)
-	script.Parent.Parent = ProtectedGuiFolder
 	
 	local TweenService = game:GetService("TweenService")
 	
