@@ -220,10 +220,6 @@ end)
 
 -- NOTIFICATION GUI --
 
-task.spawn([[
-
-]])
-
 -- Instances:
 
 repeat task.wait() until ProtectedGuiFolder
@@ -339,7 +335,7 @@ local function ZPPUPZ_fake_script() -- Hexa_Notification.LocalScript
 	end)
 end
 
-coroutine.wrap(ZPPUPZ_fake_script)()
+task.spawn(ZPPUPZ_fake_script)
 
 --------------------------
 
