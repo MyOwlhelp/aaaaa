@@ -29,10 +29,6 @@ getgenv().request = newcclosure(function(req)
 	return http_request(req)
 end)
 
-getgenv().RunENVTest = newcclosure(function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/MyOwlhelp/scripts-testing/refs/heads/SynX/abc.luau", true))()
-end)
-
 getgenv().is_hexa_closure = newcclosure(function(closure)
     return ProtectedClosures[closure] and true or false
 end)
