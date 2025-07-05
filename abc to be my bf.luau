@@ -34,11 +34,7 @@ getgenv().RunENVTest = newcclosure(function()
 end)
 
 getgenv().is_hexa_closure = newcclosure(function(closure)
-    if ProtectedClosures[closure] then
-        return true
-    else
-        return false
-    end
+    return ProtectedClosures[closure] and true or false
 end)
 
 -- Xeno Patch.lua
