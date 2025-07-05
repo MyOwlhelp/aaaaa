@@ -225,76 +225,70 @@ end)
 
 -- NOTIFICATION GUI --
 
--- Instances: 7 | Scripts: 1 | Modules: 0 | Tags: 0
-local G2L = {};
+-- Gui to Lua
+-- Version: 3.2
 
--- StarterGui.You are a fucking skid.
-G2L["1"] = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"));
-G2L["1"]["Name"] = [[You are a fucking skid.]];
-G2L["1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling;
+-- Instances:
 
+local Hexa_Notification = Instance.new("ScreenGui")
+local NotificationFrame = Instance.new("Frame")
+local UIListLayout = Instance.new("UIListLayout")
+local Template = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local NotificationText = Instance.new("TextLabel")
 
--- StarterGui.You are a fucking skid..LocalScript
-G2L["2"] = Instance.new("LocalScript", G2L["1"]);
+--Properties:
 
+Hexa_Notification.Name = "Hexa_Notification"
+Hexa_Notification.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+Hexa_Notification.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
+NotificationFrame.Name = "NotificationFrame"
+NotificationFrame.Parent = Hexa_Notification
+NotificationFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+NotificationFrame.BackgroundTransparency = 1.000
+NotificationFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+NotificationFrame.BorderSizePixel = 0
+NotificationFrame.Position = UDim2.new(0.733732224, 0, 0, 0)
+NotificationFrame.Size = UDim2.new(0, 341, 0, 583)
 
--- StarterGui.You are a fucking skid..NotificationFrame
-G2L["3"] = Instance.new("Frame", G2L["1"]);
-G2L["3"]["BorderSizePixel"] = 0;
-G2L["3"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-G2L["3"]["Size"] = UDim2.new(0, 341, 0, 583);
-G2L["3"]["Position"] = UDim2.new(0.73373, 0, 0, 0);
-G2L["3"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-G2L["3"]["Name"] = [[NotificationFrame]];
-G2L["3"]["BackgroundTransparency"] = 1;
+UIListLayout.Parent = NotificationFrame
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
+UIListLayout.Padding = UDim.new(0, 5)
 
+Template.Name = "Template"
+Template.Parent = NotificationFrame
+Template.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+Template.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Template.BorderSizePixel = 0
+Template.Position = UDim2.new(0, 0, 0.941680968, 0)
+Template.Rotation = -21.000
+Template.Size = UDim2.new(0, 348, 0, 34)
+Template.Visible = false
 
--- StarterGui.You are a fucking skid..NotificationFrame.UIListLayout
-G2L["4"] = Instance.new("UIListLayout", G2L["3"]);
-G2L["4"]["Padding"] = UDim.new(0, 5);
-G2L["4"]["VerticalAlignment"] = Enum.VerticalAlignment.Bottom;
-G2L["4"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
+UICorner.Parent = Template
 
+NotificationText.Name = "NotificationText"
+NotificationText.Parent = Template
+NotificationText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+NotificationText.BackgroundTransparency = 1.000
+NotificationText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+NotificationText.BorderSizePixel = 0
+NotificationText.Position = UDim2.new(0.0223199259, 0, 0, 0)
+NotificationText.Size = UDim2.new(0, 332, 0, 34)
+NotificationText.Font = Enum.Font.SourceSans
+NotificationText.Text = "Test"
+NotificationText.TextColor3 = Color3.fromRGB(255, 255, 255)
+NotificationText.TextSize = 30.000
+NotificationText.TextWrapped = true
+NotificationText.TextXAlignment = Enum.TextXAlignment.Left
 
--- StarterGui.You are a fucking skid..NotificationFrame.Template
-G2L["5"] = Instance.new("Frame", G2L["3"]);
-G2L["5"]["Visible"] = false;
-G2L["5"]["BorderSizePixel"] = 0;
-G2L["5"]["BackgroundColor3"] = Color3.fromRGB(16, 16, 16);
-G2L["5"]["Size"] = UDim2.new(0, 348, 0, 34);
-G2L["5"]["Position"] = UDim2.new(0, 0, 0.94168, 0);
-G2L["5"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-G2L["5"]["Name"] = [[Template]];
-G2L["5"]["Rotation"] = -21;
+-- Scripts:
 
+local function ZPPUPZ_fake_script() -- Hexa_Notification.LocalScript 
+	local script = Instance.new('LocalScript', Hexa_Notification)
 
--- StarterGui.You are a fucking skid..NotificationFrame.Template.UICorner
-G2L["6"] = Instance.new("UICorner", G2L["5"]);
-
-
-
--- StarterGui.You are a fucking skid..NotificationFrame.Template.NotificationText
-G2L["7"] = Instance.new("TextLabel", G2L["5"]);
-G2L["7"]["TextWrapped"] = true;
-G2L["7"]["BorderSizePixel"] = 0;
-G2L["7"]["TextSize"] = 30;
-G2L["7"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-G2L["7"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-G2L["7"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-G2L["7"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-G2L["7"]["BackgroundTransparency"] = 1;
-G2L["7"]["RichText"] = true;
-G2L["7"]["Size"] = UDim2.new(0, 332, 0, 34);
-G2L["7"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-G2L["7"]["Text"] = [[Test]];
-G2L["7"]["Name"] = [[NotificationText]];
-G2L["7"]["Position"] = UDim2.new(0.02232, 0, 0, 0);
-
-
--- StarterGui.You are a fucking skid..LocalScript
-local function C_2()
-local script = G2L["2"];
 	local hui = gethui()
 	local NotificationFrame = script.Parent:WaitForChild("NotificationFrame")
 	local CurrentNotificationGui = 0
@@ -349,10 +343,9 @@ local script = G2L["2"];
 			CurrentNotificationGui = CurrentNotificationGui - 1
 		end)
 	end)
-end;
-task.spawn(C_2);
+end
 
---return G2L["1"], require; -- I think without this the gui will runs fine.
+coroutine.wrap(ZPPUPZ_fake_script)()
 
 --------------------------
 
