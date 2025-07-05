@@ -10,7 +10,7 @@ getgenv().newcclosure = oldNewcclosure(function(func)
 end)
 
 if UseHexaDecompiler == true then
-    loadstring(game:HttpGet("https://gist.githubusercontent.com/MyOwlhelp/b103f397cd59fda36bb8b7767dc9cd8d/raw/af354fc544d2264532835938970d3434f8a34677/HexaLuaDecompiler.luau", true))()
+    loadstring(game:HttpGet("https://gist.githubusercontent.com/MyOwlhelp/b103f397cd59fda36bb8b7767dc9cd8d/raw/110b035145e1c5860b9243857abf8cb9ec7c695c/HexaLuaDecompiler.luau", true))()
 else
     getgenv().decompile = function(_)
         return "-- Built-in decompiler is disabled. Put your own decompiler here."
