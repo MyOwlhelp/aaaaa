@@ -287,7 +287,6 @@ NotificationText.TextXAlignment = Enum.TextXAlignment.Left
 local function ZPPUPZ_fake_script() -- Hexa_Notification.LocalScript 
 	local script = Instance.new('LocalScript', Hexa_Notification)
 
-	local NotificationFrame = script.Parent:WaitForChild("NotificationFrame")
 	local CurrentNotificationGui = 0
 	
 	local TweenService = game:GetService("TweenService")
